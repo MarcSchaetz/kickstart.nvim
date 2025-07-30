@@ -2,6 +2,24 @@
 --  I promise not to create any merge conflicts in this directory :)
 --
 -- See the kickstart.nvim README for more information
+
+-- [[ Setting options ]]
+vim.o.swapfile = false
+vim.opt.shiftwidth = 4
+vim.opt.tabstop = 4
+vim.opt.foldmethod = 'marker'
+
+-- [[ Keymaps ]]
+-- Fast escape keymaps
+vim.keymap.set('i', 'jk', '<Esc>', {})
+vim.keymap.set('i', 'kj', '<Esc>', {})
+-- Fast quit and write keymaps
+vim.keymap.set('n', '<leader>q', ':q<CR>', { desc = 'Close Neovim' })
+vim.keymap.set('n', '<leader>w', ':w<CR>', { desc = 'Write current buffer' })
+-- diagnostics
+vim.keymap.set('n', '<leader>E', 'vim.diagnostic.open_float', { desc = 'Show diagnostic [E]rror messages' })
+vim.keymap.set('n', '<leader>Q', 'vim.diagnostic.setloclist', { desc = 'Open diagnostic [Q]uickfix list' })
+
 return {
   {
     'nvim-treesitter/nvim-treesitter-textobjects',
@@ -25,6 +43,7 @@ return {
       vim.g.loaded_netrwPlugin = 1
 
       vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', {})
+      vim.api.nvim_create_user_command('FFile', ':NvimTreeFindFileToggle<CR>', { desc = 'Open nvim-tree and focus the current file' })
 
       require('nvim-tree').setup {
         on_attach = function(bufnr)
@@ -129,6 +148,15 @@ return {
       },
       build = 'make tiktoken', -- Only on MacOS or Linux
       opts = {
+        -- add a new prompt for the chat that creates a git commit message in conventional commit format for the staged files
+        prompts = {
+          Commit = {
+            prompt = 'Generate a git commit message for the staged files. Use conventional commit format.',
+            description = 'Generate a git commit message for the staged files',
+            icon = '',
+          },
+        },
+
         -- See Configuration section for options
       },
       -- See Commands section for default commands if you want to lazy load on them
